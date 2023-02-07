@@ -14,11 +14,10 @@ class DaysTest < ApplicationSystemTestCase
     visit days_url
     click_on "New day"
 
-    fill_in "Date", with: @day.date
+    fill_in "Day rating", with: @day.day_rating
+    fill_in "Day review", with: @day.day_review
     fill_in "Notes", with: @day.notes
-    fill_in "Rating", with: @day.rating
-    fill_in "Weather historical", with: @day.weather_historical
-    fill_in "Weather predicted", with: @day.weather_predicted
+    fill_in "Weather suggested", with: @day.weather_suggested
     click_on "Create Day"
 
     assert_text "Day was successfully created"
@@ -29,11 +28,10 @@ class DaysTest < ApplicationSystemTestCase
     visit day_url(@day)
     click_on "Edit this day", match: :first
 
-    fill_in "Date", with: @day.date
+    fill_in "Day rating", with: @day.day_rating
+    fill_in "Day review", with: @day.day_review
     fill_in "Notes", with: @day.notes
-    fill_in "Rating", with: @day.rating
-    fill_in "Weather historical", with: @day.weather_historical
-    fill_in "Weather predicted", with: @day.weather_predicted
+    fill_in "Weather suggested", with: @day.weather_suggested
     click_on "Update Day"
 
     assert_text "Day was successfully updated"

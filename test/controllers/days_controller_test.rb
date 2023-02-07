@@ -17,7 +17,7 @@ class DaysControllerTest < ActionDispatch::IntegrationTest
 
   test "should create day" do
     assert_difference("Day.count") do
-      post days_url, params: { day: { date: @day.date, notes: @day.notes, rating: @day.rating, weather_historical: @day.weather_historical, weather_predicted: @day.weather_predicted } }
+      post days_url, params: { day: { day_rating: @day.day_rating, day_review: @day.day_review, notes: @day.notes, weather_suggested: @day.weather_suggested } }
     end
 
     assert_redirected_to day_url(Day.last)
@@ -34,7 +34,7 @@ class DaysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update day" do
-    patch day_url(@day), params: { day: { date: @day.date, notes: @day.notes, rating: @day.rating, weather_historical: @day.weather_historical, weather_predicted: @day.weather_predicted } }
+    patch day_url(@day), params: { day: { day_rating: @day.day_rating, day_review: @day.day_review, notes: @day.notes, weather_suggested: @day.weather_suggested } }
     assert_redirected_to day_url(@day)
   end
 

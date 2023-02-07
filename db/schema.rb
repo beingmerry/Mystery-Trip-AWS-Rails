@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_06_145440) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_07_192359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,11 +53,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_145440) do
   end
 
   create_table "days", force: :cascade do |t|
-    t.string "date"
     t.string "notes"
-    t.integer "rating"
-    t.string "weather_historical"
-    t.string "weather_predicted"
+    t.integer "day_rating"
+    t.string "day_review"
+    t.string "weather_suggested"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -66,6 +65,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_145440) do
     t.bigint "trip_id", null: false
     t.bigint "day_id", null: false
     t.string "review"
+    t.string "date"
+    t.string "weather_predicted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["day_id"], name: "index_trip_days_on_day_id"
@@ -76,6 +77,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_145440) do
     t.string "destination"
     t.string "start_date"
     t.string "end_date"
+    t.string "trip_review"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
