@@ -1,50 +1,34 @@
-# syntax = docker/dockerfile:1
-
 # Make sure it matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.2.0
-FROM ruby:$RUBY_VERSION-slim as base
+FROM ruby:$RUBY_VERSION
+
+# Install libvips for Active Storage preview support
+RUN apt-get update -qq &&
+  apt-get install -y build-essential libvips &&
+  apt-get clean &&
+  rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man
 
 # Rails app lives here
 WORKDIR /rails
 
 # Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_WITHOUT="development"
-
-
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages need to build gems
-RUN apt-get update -qq && \
-    apt-get install -y build-essential default-libmysqlclient-dev git libpq-dev libvips pkg-config redis
+ENV RAILS_LOG_TO_STDOUT="1" \
+  RAILS_SERVE_STATIC_FILES="true" \
+  RAILS_ENV="production" \
+  BUNDLE_WITHOUT="development"
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    bundle exec bootsnap precompile --gemfile
-
+RUN bundle install
 
 # Copy application code
 COPY . .
 
 # Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-# Final stage for app image
-FROM base
-
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y default-mysql-client libsqlite3-0 libvips postgresql-client redis && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
